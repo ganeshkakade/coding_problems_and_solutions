@@ -120,7 +120,7 @@ vertical_table_flip = () => {
     trans_keyboard = trans_keyboard[0].map((_, colIndex) => trans_keyboard.map(row => row[colIndex]));
 }
 
-table_shift = () => {
+table_shift = (num) => {
 
 }
 
@@ -134,7 +134,7 @@ execute_trans = (trans) => {
                 vertical_table_flip()
                 break
             case trans:
-                table_shift()
+                table_shift(Number(trans))
                 break
             default: break
         }
