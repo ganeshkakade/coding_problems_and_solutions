@@ -1,122 +1,86 @@
-// define global configuration
-let keyboard = [
-    ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-    ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
-    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';'],
-    ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/']
-];
+/*
 
-let copied_keyboard = [];
+The goal of this exercise is to have a workable efficient code for the problem given below. It need not be production level code but we expect clean readable code.
 
-// log the table to console
-function log_table(table) {
-    console.table(table);
-}
 
-// string to array conversion
-function process_str_to_arr(str, split_param='') {
-    return str.split(split_param).filter(i => i)
-}
+Problem statement:
 
-function is_transformations_valid(str) {
-    if(Number.isInteger(Number(str)) || ['H', 'V'].includes(str)) {
-        return true;
-    }
-    return false;
-}
+You have a keyboard which has 40 keys - 
 
-function horizontal_table_flip() {
-    for(i=0; i<copied_keyboard.length; i++) {
-        copied_keyboard[i] = copied_keyboard[i].reverse();
-    }
-}
-const transpose = arr => {
-    for (let i = 0; i < arr.length; i++) {
-       for (let j = 0; j < i; j++) {
-          const tmp = arr[i][j];
-          arr[i][j] = arr[j][i];
-          arr[j][i] = tmp;
-       };
-    }
- }
+4 rows and 10 columns
 
-function vertical_table_flip() {
-    copied_keyboard = copied_keyboard[0].map((col, c) => copied_keyboard.map((row, r) => copied_keyboard[r][c]));
-    horizontal_table_flip()
-    copied_keyboard = copied_keyboard[0].map((col, c) => copied_keyboard.map((row, r) => copied_keyboard[r][c]));
 
-    // copied_keyboard[0].map((val, index) => copied_keyboard.map(row => row[index]).reverse())
-    // copied_keyboard = transpose(copied_keyboard)
-    
+The rows are as follows - 
 
-}
+1st row - 1 to 0 
 
-function table_shift() {
+2nd row - q to p
 
-}
+3rd row - a to ;
 
-// perform actual transformations
-function execute_transformation(str) {
-    if(is_transformations_valid(str)) {
-       
-        switch(str) {
-            case 'H':
-                horizontal_table_flip();
-                break;
-            case 'V':
-                vertical_table_flip();
-                break;
-            case str:
-                table_shift()
-                break;
-            default: break;
-        }
-    }
-}
+4th row - z to /
 
-// process transformations on keyboard
-function process_transformation_arr(transformation_arr) {
-    for (var i = 0; i < transformation_arr.length; i++) {
-        execute_transformation(transformation_arr[i]);  
-        log_table(copied_keyboard) 
-    }
-}
 
-// iterate through existing string input characters to find the transformed string at same position
-function process_text_arr(text_arr) {
-    let output = ''; // to print output on single line
-    for(i=0; i<text_arr.length; i++) {
-        // get position of character from original keyboard
-        let row = keyboard.findIndex(row => row.includes(text_arr[i]));
-        let col = keyboard[row].indexOf(text_arr[i]);
-        
-        // for the same position, output new character from transformed keyboard 
-        output += copied_keyboard[row][col]
-    }
-    console.log(output)
-}
+You can apply three “transformations” to a keyboard where the keys are exchanged in the following manner - 
 
-// main
-function keyboard_transformations() {
-    
-    // inputs 
-    let input_transformation_str = "H,V";
-    let input_text_str = "qw";
 
-    // make copy of keyboard for reference
-    copied_keyboard = JSON.parse(JSON.stringify(keyboard)); 
+Horizontal Transform (H) - This flips the keyboard on a vertical axis. i.e. the axis is between 5th and 6th columns and all the keys on the left are interchanged with the right. 
 
-    let transformtion_arr = process_str_to_arr(input_transformation_str, ',');
-    let text_arr = process_str_to_arr(input_text_str);
-    
-    log_table(keyboard)
+Example - In the first row - 1 is exchanged with 0, 2 is exchanged with 9, 3 is exchanged with 8 … and so on.
 
-    console.log('copied keyboard')
-    process_transformation_arr(transformtion_arr);
-    process_text_arr(text_arr);
 
-    
-}
+Vertical Transform (V) - This flips the keyboard on a horizontal axis. ie. the axis between the 2nd and the 3rd row. All the keys on the top most row are exchanged with the bottom. 
 
-// execute the main
-keyboard_transformations();
+Example - In the first row - 1 is exchanged with z, 2 is exchanged with x … and so on
+
+In the second row - q is exchanged with a, w is exchanged with s … and so on
+
+
+Shift - Its an integer. This shifts the keys on the keyboard by that many spots. 
+
+So for a Shift of 2, the keys are moved to the right by 2 spots. So q moves to e, w moves to r … and so on. 
+
+
+For negative values of integer, the keys shift to the left. When a key is at the end of the row, it just moves onto the next row for the positive shift. It moves to the previous row for negative shift.
+
+
+Note that shift transform works across rows and not just within the row itself. For eg. Shifting the keyboard by 1 will result in 0 moving to q, p moving to a and so on
+
+
+You can chain these transforms, that is, you can have a horizontal transform, shift and a vertical transform chained together denoted as H, 2, V
+
+
+Your program has two inputs - 
+
+1. A string containing the list of transforms like “H,V,-5,H,2,V,V,H”
+
+2. A large amount of text like “asdfgrerwfasdf12333resdf”
+
+
+The program takes 2) and applies transforms to each character in that string as specified in 1) and outputs the resulting string.
+
+Example - 
+
+1) H,V
+
+2) qw
+
+
+Output of program will be - ;l 
+
+
+If your program encounters strings not on your “keyboard” (like “]”) you can just pass it through untransformed to output.
+
+Key points to remember - 
+
+Write clean and readable code
+
+Assume that you are processing a huge text file which you are applying to transform. Like a 1GB big file. So design your logic putting that into consideration.
+
+You can use any language to implement the program.
+
+It is not necessary that the program take the input from a file or command line arguments, You can use static string variables which can be changed.
+
+Output can be printed to a file or the console.
+ 
+*/
