@@ -5,14 +5,14 @@ The goal of this exercise is to have a workable efficient code for the problem g
 
 Problem statement:
 
-You have a keyboard which has 40 keys - 
+You have a keyboard which has 40 keys -
 
 4 rows and 10 columns
 
 
-The rows are as follows - 
+The rows are as follows -
 
-1st row - 1 to 0 
+1st row - 1 to 0
 
 2nd row - q to p
 
@@ -21,24 +21,24 @@ The rows are as follows -
 4th row - z to /
 
 
-You can apply three “transformations” to a keyboard where the keys are exchanged in the following manner - 
+You can apply three “transformations” to a keyboard where the keys are exchanged in the following manner -
 
 
-Horizontal Transform (H) - This flips the keyboard on a vertical axis. i.e. the axis is between 5th and 6th columns and all the keys on the left are interchanged with the right. 
+Horizontal Transform (H) - This flips the keyboard on a vertical axis. i.e. the axis is between 5th and 6th columns and all the keys on the left are interchanged with the right.
 
 Example - In the first row - 1 is exchanged with 0, 2 is exchanged with 9, 3 is exchanged with 8 … and so on.
 
 
-Vertical Transform (V) - This flips the keyboard on a horizontal axis. ie. the axis between the 2nd and the 3rd row. All the keys on the top most row are exchanged with the bottom. 
+Vertical Transform (V) - This flips the keyboard on a horizontal axis. ie. the axis between the 2nd and the 3rd row. All the keys on the top most row are exchanged with the bottom.
 
 Example - In the first row - 1 is exchanged with z, 2 is exchanged with x … and so on
 
 In the second row - q is exchanged with a, w is exchanged with s … and so on
 
 
-Shift - Its an integer. This shifts the keys on the keyboard by that many spots. 
+Shift - Its an integer. This shifts the keys on the keyboard by that many spots.
 
-So for a Shift of 2, the keys are moved to the right by 2 spots. So q moves to e, w moves to r … and so on. 
+So for a Shift of 2, the keys are moved to the right by 2 spots. So q moves to e, w moves to r … and so on.
 
 
 For negative values of integer, the keys shift to the left. When a key is at the end of the row, it just moves onto the next row for the positive shift. It moves to the previous row for negative shift.
@@ -50,7 +50,7 @@ Note that shift transform works across rows and not just within the row itself. 
 You can chain these transforms, that is, you can have a horizontal transform, shift and a vertical transform chained together denoted as H, 2, V
 
 
-Your program has two inputs - 
+Your program has two inputs -
 
 1. A string containing the list of transforms like “H,V,-5,H,2,V,V,H”
 
@@ -59,19 +59,19 @@ Your program has two inputs -
 
 The program takes 2) and applies transforms to each character in that string as specified in 1) and outputs the resulting string.
 
-Example - 
+Example -
 
 1) H,V
 
 2) qw
 
 
-Output of program will be - ;l 
+Output of program will be - ;l
 
 
 If your program encounters strings not on your “keyboard” (like “]”) you can just pass it through untransformed to output.
 
-Key points to remember - 
+Key points to remember -
 
 Write clean and readable code
 
@@ -82,29 +82,29 @@ You can use any language to implement the program.
 It is not necessary that the program take the input from a file or command line arguments, You can use static string variables which can be changed.
 
 Output can be printed to a file or the console.
- 
+
 */
 
 // solution
 
 // define global configuration. hard coded for easiness
 let keyboard = [
-    ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-    ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
-    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';'],
-    ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/'],
-]
+    ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
+    ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
+    ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";"],
+    ["z", "x", "c", "v", "b", "n", "m", ",", ".", "/"]
+];
 
-let trans_keyboard = []
-let txt_indexes = {}
+let trans_keyboard = [];
+let txt_indexes = {};
 
 // convert string to string array
-convert_str_to_arr = (str, split_param='') => {
-    return str.replace(/\s+/g, '').split(split_param)
+convert_str_to_arr = (str, split_param="") => {
+    return str.replace(/\s+/g, "").split(split_param)
 }
 
 is_transformations_valid = (trans) => {
-    if(Number.isInteger(Number(trans)) || ['H', 'V'].includes(trans)) {
+    if(Number.isInteger(Number(trans)) || ["H", "V"].includes(trans)) {
         return true
     }
     return false
@@ -120,17 +120,36 @@ vertical_table_flip = () => {
     trans_keyboard = trans_keyboard[0].map((_, colIndex) => trans_keyboard.map(row => row[colIndex]));
 }
 
-table_shift = (num) => {
+rotate_arr = (arr, reverse=true) => {
+    if (reverse) arr.unshift(arr.pop());
+    else arr.push(arr.shift());
+    return arr;
+  }
 
+table_shift = (num) => {
+    let flat_trans_keyboard = [].concat(...trans_keyboard);
+
+    if(num > 0) {
+        for (var i=0; i<num; i++) {
+            flat_trans_keyboard = rotate_arr(flat_trans_keyboard)
+        }
+    } else {
+        for (var i=0; i>num; i--) {
+            flat_trans_keyboard = rotate_arr(flat_trans_keyboard, false)
+        }
+    }
+
+    trans_keyboard = [];
+    while(flat_trans_keyboard.length) trans_keyboard.push(flat_trans_keyboard.splice(0,10));
 }
 
 execute_trans = (trans) => {
     if(is_transformations_valid(trans)) {
         switch(trans) {
-            case 'H':
+            case "H":
                 horizontal_table_flip()
                 break
-            case 'V':
+            case "V":
                 vertical_table_flip()
                 break
             case trans:
@@ -150,7 +169,7 @@ process_trans_arr = (trans_arr) => {
 
 // iterate txt arr to find the new str in tranformed keyboard
 process_text_arr = (txt_arr) => {
-    let output = '' // to print output on single line
+    let output = "" // to print output on single line
     txt_arr.forEach((txt, i) => {
         // check if txt index record exists
         if(txt in txt_indexes) {
@@ -166,29 +185,34 @@ process_text_arr = (txt_arr) => {
             txt_indexes[txt] = [row, col]
         }
     })
-    console.log(output)
+    console.log("output: ", output)
 }
 
-// main 
+// main
 keyboard_transformations = () => {
 
-    // inputs hardcoded 
-    let input_trans_str = "H,V"
+    // inputs hardcoded
+    let input_trans_str = "H,V,4"
     let input_txt_str = "qw"
 
     // deep clone of original keyboard to avoid transformation changes
     trans_keyboard = JSON.parse(JSON.stringify(keyboard))
 
     // create string array from input string
-    let trans_arr = convert_str_to_arr(input_trans_str, ',')
+    let trans_arr = convert_str_to_arr(input_trans_str, ",")
     let txt_arr = convert_str_to_arr(input_txt_str)
 
+    // before transformation
+    console.log("before transformation")
     console.table(keyboard)
 
     process_trans_arr(trans_arr)
-    process_text_arr(txt_arr)
-    
+
+    // after transformation
+    console.log("after transformation")
     console.table(trans_keyboard)
+
+    process_text_arr(txt_arr)
 }
 
 // execute the main
