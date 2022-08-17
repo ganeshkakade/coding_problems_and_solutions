@@ -124,7 +124,7 @@ rotate_arr = (arr, reverse=true) => {
     if (reverse) arr.unshift(arr.pop());
     else arr.push(arr.shift());
     return arr;
-  }
+}
 
 table_shift = (num) => {
     let flat_trans_keyboard = [].concat(...trans_keyboard);
