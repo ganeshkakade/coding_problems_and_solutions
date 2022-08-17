@@ -183,12 +183,12 @@ keyboard_transformations = () => {
     let trans_arr = convert_str_to_arr(input_trans_str, ',')
     let txt_arr = convert_str_to_arr(input_txt_str)
 
-    console.table('original keyboard', keyboard)
+    console.table(keyboard)
 
     process_trans_arr(trans_arr)
     process_text_arr(txt_arr)
     
-    console.table('transformed keyboard', trans_keyboard)
+    console.table(trans_keyboard)
 }
 
 // execute the main
