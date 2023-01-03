@@ -1,0 +1,1 @@
+Get the count of immediate/consecutive occurrences of object in input array of objects those having similar key and print the output array of objects with that key value and its occurence count
